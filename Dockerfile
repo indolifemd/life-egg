@@ -29,6 +29,7 @@ RUN apt-get update && apt-get install -y \
   ca-certificates \
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/*
+RUN chmod +x /home/container/entrypoint.sh
 
 WORKDIR /home/container
 COPY . .
