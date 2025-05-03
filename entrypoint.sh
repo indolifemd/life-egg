@@ -1,9 +1,23 @@
 #!/bin/bash
-# entrypoint.sh
-cd /home/container
+# Cek jika git ada dan melakukan pull jika diatur untuk auto-update
+if [[ -d .git ]] && [[ ${AUTO_UPDATE} == "1" ]]; then
+  git pull
+fi
 
-# Ganti {{STARTUP}} dengan input dari panel
-MODIFIED_STARTUP=$(echo "${STARTUP}" | sed -e 's/{{/${/g' -e 's/}}/}/g')
+# Install paket Node.js jika ada yang ditentukan
+if [[ ! -z ${NODE_PACKAGES} ]]; then
+  /usr/local/bin/npm install ${NODE_PACKAGES}
+fi
 
-# Jalankan perintah
-eval ${MODIFIED_STARTUP}
+# Uninstall paket Node.js jika ada yang ditentukan
+if [[ ! -z ${UNNODE_PACKAGES} ]]; then
+  /usr/local/bin/npm uninstall ${UNNODE_PACKAGES}
+fi
+
+# Install dependensi dari package.json jika ada
+if [ -f /home/container/package.json ]; then
+  /usr/local/bin/npm install
+fi
+
+# Perintah untuk menjalankan aplikasi
+/usr/local/bin/${CMD_RUN}
