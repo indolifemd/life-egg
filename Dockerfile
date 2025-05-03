@@ -1,7 +1,7 @@
-# Base image Node.js 20
-FROM node:20-bullseye
+# Base image untuk Node.js 20
+FROM node:20-bullseye-slim
 
-# Install Puppeteer (jika perlu) dan dependensi tambahan
+# Install dependensi untuk Puppeteer dan Node.js
 RUN apt-get update && apt-get install -y \
     libatk-bridge2.0-0 \
     libatk1.0-0 \
@@ -29,21 +29,18 @@ RUN apt-get update && apt-get install -y \
     xdg-utils \
     wget \
     ca-certificates \
-    --no-install-recommends && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    --no-install-recommends \
+&& apt-get clean \
+&& rm -rf /var/lib/apt/lists/*
 
-# Set working directory (Pterodactyl expects this)
+# Tentukan direktori kerja di dalam container
 WORKDIR /home/container
 
-# Copy package files only first
-COPY package*.json ./
-
-# Install Node.js dependencies
-RUN npm install
-
-# Copy all project files
+# Salin seluruh file proyek ke dalam container
 COPY . .
 
-# Entry point (Egg akan menimpa ini dengan `{{STARTUP}}`)
-CMD ["bash", "entrypoint.sh"]
+# Install dependensi Node.js
+RUN npm install
+
+# Perintah untuk menjalankan aplikasi
+CMD ["npm", "start"]
