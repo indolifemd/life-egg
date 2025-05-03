@@ -29,8 +29,11 @@ RUN apt-get update && apt-get install -y \
   ca-certificates \
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/*
-RUN chmod +x /home/container/entrypoint.sh
-
 WORKDIR /home/container
-COPY . .
-CMD ["bash", "/entrypoint.sh"]
+
+COPY ./entrypoint.sh /entrypoint.sh
+
+CMD [ "/bin/bash", "/entrypoint.sh" ]
+
+
+#IndoLife
